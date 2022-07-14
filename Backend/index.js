@@ -1,3 +1,4 @@
+
 const express = require('express')
 const cors = require('cors')
 const app = express()
@@ -10,7 +11,6 @@ app.use(cors());
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
-
 
 app.post('/api', (req, res) => {
     let code = req.body.code;
@@ -48,6 +48,31 @@ app.post('/apipython', (req, res) => {
     var program = {
         script: code,
         language: "python3",
+        versionIndex: "0",
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+    };
+
+    request({
+        url: 'https://api.jdoodle.com/v1/execute',
+        method: "POST",
+        json: program
+    },
+        function (error, response, body) {
+            console.log('error:', error);
+            console.log('statusCode:', response && response.statusCode);
+            console.log(code);
+            res.send({ body: body || error })
+        });
+
+})
+app.post('/apijava', (req, res) => {
+    let code = req.body.code;
+    var request = require('request');
+
+    var program = {
+        script: code,
+        language: "java",
         versionIndex: "0",
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
